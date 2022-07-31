@@ -12,6 +12,12 @@ object MinimalPlugin extends AutoPlugin { //Autoplugin puts dependencies in the 
     val greetingName = settingKey[String]("name to address greeting to")
     val sayHello = taskKey[Unit]("say greeting")
     val sayVoice = settingKey[String]("voice to say hello in")
+    val sayTestsPass = taskKey[Unit]("congratulatory phrase celebrating passing tests")
+    val sayTestsFailOrError = taskKey[Unit]("celebrate tests failing or error-ing")
+    val testResultOutcome = Def.taskDyn {
+      if ((Test / executeTests).value.overall == TestResult.Passed) Def.task(sayTestsPass.value)
+      else Def.task(sayTestsFailOrError.value)
+    }
   }
 
   import autoImport._
@@ -26,11 +32,18 @@ object MinimalPlugin extends AutoPlugin { //Autoplugin puts dependencies in the 
       val voice = sayVoice.value
       Process(s"say -v $voice Hello World").!!
     },
-    (Test / test) := {
-      val old = (Test / test).value
-      hello.value
-      sayHello.value
-      old
+    sayTestsPass := {
+      val voice = sayVoice.value
+      Process(s"say -v $voice Congratulations, your tests passed").!!
+    },
+    sayTestsFailOrError := {
+      val voice = sayVoice.value
+      Process(s"say -v $voice Better luck next time").!!
+    },
+    Test / test := {
+      val testTask = (Test / test).value
+      testResultOutcome.value
+      testTask
     },
   )
 }
