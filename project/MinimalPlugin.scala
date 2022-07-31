@@ -1,4 +1,5 @@
 import sbt.AutoPlugin
+import sbt.Keys._
 import sbt._
 
 import scala.sys.process.Process
@@ -24,7 +25,13 @@ object MinimalPlugin extends AutoPlugin { //Autoplugin puts dependencies in the 
     sayHello := {
       val voice = sayVoice.value
       Process(s"say -v $voice Hello World").!!
-    }
+    },
+    (Test / test) := {
+      val old = (Test / test).value
+      hello.value
+      sayHello.value
+      old
+    },
   )
 }
 
