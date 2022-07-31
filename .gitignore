@@ -1,2 +1,5 @@
+/target
+.bsp
 *.class
 *.log
+project/target
