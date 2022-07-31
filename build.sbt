@@ -1,5 +1,6 @@
 lazy val root = (project in file("."))
   .enablePlugins(SbtPlugin)
   .settings(
-    greetingName := "Amina"
+    greetingName := "Amina",
+    sayVoice := "Alice",
   )

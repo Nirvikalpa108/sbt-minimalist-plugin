@@ -16,8 +16,11 @@ object MinimalPlugin extends AutoPlugin { //Autoplugin puts dependencies in the 
   import autoImport._
   override lazy val globalSettings = List(
     greetingName := "Coco",
-    hello := println(s"Hello ${greetingName.value}"),
     sayVoice := "Fiona",
+  )
+
+  override lazy val projectSettings = List(
+    hello := println(s"Hello ${greetingName.value}"),
     sayHello := {
       val voice = sayVoice.value
       Process(s"say -v $voice Hello World").!!
